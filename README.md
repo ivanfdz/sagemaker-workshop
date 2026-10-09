@@ -34,6 +34,8 @@ sagemaker-workshop/
 Arranque rápido:
 
 ```bash
+# Necesitas Python 3.10–3.12 (sagemaker 3.x no instala en 3.9).
+# Sin python3.12 en el PATH: uv venv --python 3.12 .venv
 python3.12 -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt ipykernel
 # edita labs/config.py y abre labs/workshop_labs.ipynb
