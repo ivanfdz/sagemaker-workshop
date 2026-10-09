@@ -1,0 +1,4 @@
+# Entorno local para ejecutar los labs (Python 3.10–3.12 recomendado)
+sagemaker==3.24.0
+boto3==1.43.110
+awswrangler==3.17.1

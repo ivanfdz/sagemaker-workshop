@@ -1,0 +1,33 @@
+flowchart LR
+    subgraph DATOS["1 · Datos"]
+        GL["Glue / Athena<br/>capa gold"] --> DS[("S3<br/>datasets versionados")]
+        PJ["Processing Job"] --> DS
+        FS["Feature Store<br/>offline en S3"] --> DS
+    end
+    subgraph TRAIN["2 · Entrenamiento"]
+        TJ["Training Job<br/>contenedor efímero"]
+        HPO["Tuning Job (HPO)"] -. lanza N jobs .-> TJ
+        EXP["MLflow / métricas"]
+    end
+    subgraph GOV["3 · Gobierno"]
+        ART[("S3<br/>model.tar.gz")] --> REG["Model Registry<br/>Pending → Approved"]
+    end
+    subgraph INF["4 · Inferencia"]
+        MOD["Model<br/>imagen + artefacto + rol"]
+        RT["Real-time"]
+        SLS["Serverless"]
+        ASY["Asíncrona"]
+        BT["Batch Transform"]
+    end
+    subgraph OPS["5 · Operación"]
+        MON["Model Monitor<br/>data capture + baseline"]
+        PIPE["SageMaker Pipelines<br/>orquesta el ciclo"]
+    end
+    DS -->|"canales<br/>train / validation"| TJ
+    TJ -->|"/opt/ml/model"| ART
+    TJ -.-> EXP
+    REG --> MOD
+    MOD --> RT & SLS & ASY & BT
+    RT --> MON
+    MON -. drift: reentrenar .-> PIPE
+    PIPE -.-> PJ
